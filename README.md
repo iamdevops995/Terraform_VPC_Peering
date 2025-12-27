@@ -3,6 +3,13 @@
 ### 𝗣𝗿𝗼𝗷𝗲𝗰𝘁 𝗢𝘃𝗲𝗿𝘃𝗶𝗲𝘄
 This project focuses on building a scalable and secure AWS networking setup by creating two independent VPCs and connecting them through a VPC Peering connection, fully automated using Terraform.
 
+
+### Infrastructure Diagram:
+
+<p align="center">
+  <img src="images/Terraform_VPC_Perring.jpg" alt="Architecture" width="800">
+</p>
+
 🔧 𝗜𝗺𝗽𝗹𝗲𝗺𝗲𝗻𝘁𝗲𝗱
 
 - 🔹Created VPC-A and VPC-B with custom CIDR ranges
@@ -20,6 +27,3 @@ This project focuses on building a scalable and secure AWS networking setup by c
 - 🔹Route Tables 
 - 🔹EC2 
 - 🔹Networking
-
-Infrastructure Diagram:
-
