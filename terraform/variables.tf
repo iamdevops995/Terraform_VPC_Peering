@@ -16,11 +16,11 @@ variable "sub-b-cicd" {
 }
 
 variable "peer_owner_id" {
-  default = "852335442799"
+  default = "452237354844"
 }
 
 variable "ami" {
-    type = string
-    default = "ami-0ecb62995f68bb549"
-  
+  type    = string
+  default = "ami-0ecb62995f68bb549"
+
 }
