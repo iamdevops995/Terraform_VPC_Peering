@@ -1,5 +1,6 @@
 # Terraform_VPC_Peering
-
+Pipeline Status:
+[![Infrastructure provisioning using terraform](https://github.com/iamdevops995/Terraform_VPC_Peering/actions/workflows/tf-workflow.yml/badge.svg?event=pull_request)](https://github.com/iamdevops995/Terraform_VPC_Peering/actions/workflows/tf-workflow.yml)
 ### 𝗣𝗿𝗼𝗷𝗲𝗰𝘁 𝗢𝘃𝗲𝗿𝘃𝗶𝗲𝘄
 This project focuses on building a scalable and secure AWS networking setup by creating two independent VPCs and connecting them through a VPC Peering connection, fully automated using Terraform.
 
