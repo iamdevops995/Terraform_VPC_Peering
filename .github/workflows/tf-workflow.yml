@@ -111,13 +111,12 @@ jobs:
       - name: Display ping result
         run: |
           cat ping_result.txt
-    #
       # - name: upload ping result as artifact
       #   uses: actions/upload-artifact@v4
       #   with:
       #     name: ping-result
       #     path: $GITHUB_WORKSPACE/terraform/ping_result.txt
-          retention-days: 1
+          # retention-days: 1
       - uses: actions/github-script@v7
         if:  github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
         env:
