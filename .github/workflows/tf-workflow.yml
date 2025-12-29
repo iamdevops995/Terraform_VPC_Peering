@@ -100,6 +100,12 @@ jobs:
             else
               echo "❌ Failed to execute commands to some host."
             fi
+      - name: Copy ping result from EC2
+        run: |
+          scp -i ${{ secrets.EC2_SSH_KEY }} \
+            ubuntu@${{ steps.ec2.outputs.public_ip_address }}:/home/ubuntu/ping_result.txt \
+            ping_result.txt
+#
       - name: upload ping result as artifact
         uses: actions/upload-artifact@v5
         with:
