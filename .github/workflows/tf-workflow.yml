@@ -89,7 +89,7 @@ jobs:
         run:
             cat /tmp/ping_result.txt
       - name: upload ping result as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v5
         with:
           name: ping-result
           path: /tmp/ping_result.txt
