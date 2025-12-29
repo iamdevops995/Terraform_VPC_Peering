@@ -27,3 +27,4 @@ This project focuses on building a scalable and secure AWS networking setup by c
 - 🔹Route Tables 
 - 🔹EC2 
 - 🔹Networking
+- 🔹EC2 Instance ( for Testing the connection from vpc a->b and b->a)
