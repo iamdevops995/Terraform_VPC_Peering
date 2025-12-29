@@ -107,8 +107,12 @@ jobs:
           chmod 600 pri_key
           scp -o StrictHostKeyChecking=no \
             -i pri_key \
-            ubuntu@${{ steps.ec2.outputs.public_ip_address }}:/home/ubuntu/ping_result.txt \
-            ping_result.txt
+            ubuntu@${{ steps.ec2.outputs.public_ip_address }}:/home/ubuntu/ping_result.txt ./ping_result.txt
+      - name: Display ping result
+        run: |
+          pwd
+          ls -lrt
+          cat ping_result.txt
     #
       - name: upload ping result as artifact
         uses: actions/upload-artifact@v5
