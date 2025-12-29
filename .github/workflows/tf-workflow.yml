@@ -86,6 +86,7 @@ jobs:
           script: |
             touch ping_result.txt
             ls -lrt
+            pwd
             echo "##############################" > ping_result.txt
             echo "Ping Test from test-1a to test-2b" >> ping_result.txt
             echo "##############################" >> ping_result.txt 
