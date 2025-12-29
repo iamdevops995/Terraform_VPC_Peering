@@ -54,16 +54,21 @@ jobs:
       - name: Terraform Apply
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve
-      - name: Check the aws ec2 instance private-ip-address and ssh into it and ping second machine
-        uses: aws-actions/aws-cli@v2
+      - name: Get EC2 IP addresses
         id: ec2
-        with:
-          aws-region: us-east-1
-          aws-cli-command: |
-            # ec2 describe-instances --filters "Name=tag:Name,Values=test-1a" --query "Reservations[*].Instances[*].PublicIpAddress" --output text
-            # ec2 describe-instances --filters "Name=tag:Name,Values=test-2b" --query "Reservations[*].Instances[*].PrivateIpAddress" --output text
-            echo public_ip_address=$(ec2 describe-instances --filters "Name=tag:Name,Values=test-1a" --query "Reservations[*].Instances[*].PublicIpAddress" --output text) >> $GITHUB_OUTPUT
-            echo private_ip_address=$(ec2 describe-instances --filters "Name=tag:Name,Values=test-2b" --query "Reservations[*].Instances[*].PrivateIpAddress" --output text) >> $GITHUB_OUTPUT
+        run: |
+          PUBLIC_IP=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=test-1a" \
+            --query "Reservations[].Instances[].PublicIpAddress" \
+            --output text)
+
+          PRIVATE_IP=$(aws ec2 describe-instances \
+            --filters "Name=tag:Name,Values=test-2b" \
+            --query "Reservations[].Instances[].PrivateIpAddress" \
+            --output text)
+
+          echo "public_ip_address=$PUBLIC_IP" >> $GITHUB_OUTPUT
+          echo "private_ip_address=$PRIVATE_IP" >> $GITHUB_OUTPUT
       - name: ssh into the ec2 instance test-1a and ping test-2b private ip address
         uses: appleboy/ssh-action@v0.1.7
         with:
