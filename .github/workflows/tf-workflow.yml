@@ -54,18 +54,46 @@ jobs:
       - name: Terraform Apply
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve
-      - name: SSH to EC2
-        uses: appleboy/ssh-action@v1.0.3
+      - name: Check the aws ec2 instance private-ip-address and ssh into it and ping second machine
+        uses: aws-actions/aws-cli@v2
+        id: ec2
         with:
-          host: ${{ vars.EC2_HOST }}
+          aws-region: us-east-1
+          aws-cli-command: |
+            # ec2 describe-instances --filters "Name=tag:Name,Values=test-1a" --query "Reservations[*].Instances[*].PublicIpAddress" --output text
+            # ec2 describe-instances --filters "Name=tag:Name,Values=test-2b" --query "Reservations[*].Instances[*].PrivateIpAddress" --output text
+            echo public_ip_address=$(ec2 describe-instances --filters "Name=tag:Name,Values=test-1a" --query "Reservations[*].Instances[*].PublicIpAddress" --output text) >> $GITHUB_OUTPUT
+            echo private_ip_address=$(ec2 describe-instances --filters "Name=tag:Name,Values=test-2b" --query "Reservations[*].Instances[*].PrivateIpAddress" --output text) >> $GITHUB_OUTPUT
+      - name: ssh into the ec2 instance test-1a and ping test-2b private ip address
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ steps.ec2.outputs.public_ip_address }}
           username: ubuntu
-          port: 22
           key: ${{ secrets.EC2_SSH_KEY }}
-        env:
-          TARGET_HOST: ${{ vars.TARGET_HOST }}
           script: |
-            uptime
-            ping -c 3 ${var.TARGET_HOST}
+            echo "##############################" > /tmp/ping_result.txt
+            echo "Ping Test from test-1a to test-2b" >> /tmp/ping_result.txt
+            echo "##############################" >> /tmp/ping_result.txt 
+            echo HOSTNAME: ${{ steps.ec2.outputs.public_ip_address }} >> /tmp/ping_result.txt
+            uptime  >> /tmp/ping_result.txt
+            date >> /tmp/ping_result.txt
+            echo "###############################" >> /tmp/ping_result.txt
+            echo "Pinging to private IP Address: ${{ steps.ec2.outputs.private_ip_address }}" >> /tmp/ping_result.txt
+            ping -c 4 ${{ steps.ec2.outputs.private_ip_address }} >> /tmp/ping_result.txt
+            if [ $? -eq 0 ]; then
+              echo "✅ Successfully executed commands to all host."
+            else
+              echo "❌ Failed to execute commands to some host."
+            fi
+      - name: display ping result
+        run:
+            cat /tmp/ping_result.txt
+      - name: upload ping result as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: ping-result
+          path: /tmp/ping_result.txt
+          retention-days: 1
       - uses: actions/github-script@v7
         if:  github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
         env:
