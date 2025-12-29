@@ -102,7 +102,9 @@ jobs:
             fi
       - name: Copy ping result from EC2
         run: |
-          scp -i ${{ secrets.EC2_SSH_KEY }} \
+          touch pri_key
+          cat ${{ secrets.EC2_SSH_KEY }} >> pri_key
+          scp -i pri_key \
             ubuntu@${{ steps.ec2.outputs.public_ip_address }}:/home/ubuntu/ping_result.txt \
             ping_result.txt
 #
