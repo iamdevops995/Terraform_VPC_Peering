@@ -85,8 +85,8 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             touch ping_result.txt
-            ls -lrt
-            pwd
+            # ls -lrt
+            # pwd
             echo "##############################" > ping_result.txt
             echo "Ping Test from test-1a to test-2b" >> ping_result.txt
             echo "##############################" >> ping_result.txt 
@@ -108,17 +108,15 @@ jobs:
           scp -o StrictHostKeyChecking=no \
             -i pri_key \
             ubuntu@${{ steps.ec2.outputs.public_ip_address }}:/home/ubuntu/ping_result.txt  $GITHUB_WORKSPACE/terraform/ping_result.txt
-      # - name: Display ping result
-      #   run: |
-      #     pwd
-      #     ls -lrt
-      #     cat ping_result.txt
+      - name: Display ping result
+        run: |
+          cat ping_result.txt
     #
-      - name: upload ping result as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ping-result
-          path: $GITHUB_WORKSPACE/terraform/ping_result.txt
+      # - name: upload ping result as artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ping-result
+      #     path: $GITHUB_WORKSPACE/terraform/ping_result.txt
           retention-days: 1
       - uses: actions/github-script@v7
         if:  github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
