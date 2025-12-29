@@ -107,18 +107,18 @@ jobs:
           chmod 600 pri_key
           scp -o StrictHostKeyChecking=no \
             -i pri_key \
-            ubuntu@${{ steps.ec2.outputs.public_ip_address }}:/home/ubuntu/ping_result.txt ./ping_result.txt
-      - name: Display ping result
-        run: |
-          pwd
-          ls -lrt
-          cat ping_result.txt
+            ubuntu@${{ steps.ec2.outputs.public_ip_address }}:/home/ubuntu/ping_result.txt  $GITHUB_WORKSPACE/terraform/ping_result.txt
+      # - name: Display ping result
+      #   run: |
+      #     pwd
+      #     ls -lrt
+      #     cat ping_result.txt
     #
       - name: upload ping result as artifact
         uses: actions/upload-artifact@v5
         with:
           name: ping-result
-          path: ping_result.txt
+          path: $GITHUB_WORKSPACE/terraform/ping_result.txt
           retention-days: 1
       - uses: actions/github-script@v7
         if:  github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
