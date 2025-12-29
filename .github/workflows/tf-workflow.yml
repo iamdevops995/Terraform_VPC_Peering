@@ -35,7 +35,7 @@ jobs:
       - name: aws-configure
         uses: ./.github/actions/oidc-aws/
         with:
-          role-to-assume: arn:aws:iam::452237354844:role/vpcPeeringRole
+          role-to-assume: arn:aws:iam::277968024163:role/vpcPeeringRole
           aws-region: us-east-1
       - name: Terraform format
         id: fmt
