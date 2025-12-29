@@ -32,6 +32,14 @@ jobs:
         uses: hashicorp/setup-terraform@v3
       - name: check terraform cli version
         run: terraform --version
+      - name: Cache Terraform
+        uses: actions/cache@v4
+        with:
+          path: |
+            .terraform
+          key: terraform-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}
+          restore-keys: |
+            terraform-${{ runner.os }}-
       - name: aws-configure
         uses: ./.github/actions/oidc-aws/
         with:
@@ -76,15 +84,16 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            echo "##############################" > /tmp/ping_result.txt
-            echo "Ping Test from test-1a to test-2b" >> /tmp/ping_result.txt
-            echo "##############################" >> /tmp/ping_result.txt 
-            echo HOSTNAME: ${{ steps.ec2.outputs.public_ip_address }} >> /tmp/ping_result.txt
-            uptime  >> /tmp/ping_result.txt
-            date >> /tmp/ping_result.txt
-            echo "###############################" >> /tmp/ping_result.txt
-            echo "Pinging to private IP Address: ${{ steps.ec2.outputs.private_ip_address }}" >> /tmp/ping_result.txt
-            ping -c 4 ${{ steps.ec2.outputs.private_ip_address }} >> /tmp/ping_result.txt
+            touch ping_result.txt
+            echo "##############################" > ping_result.txt
+            echo "Ping Test from test-1a to test-2b" >> ping_result.txt
+            echo "##############################" >> ping_result.txt 
+            echo HOSTNAME: ${{ steps.ec2.outputs.public_ip_address }} >> ping_result.txt
+            uptime  >> ping_result.txt
+            date >> ping_result.txt
+            echo "###############################" >> ping_result.txt
+            echo "Pinging to private IP Address: ${{ steps.ec2.outputs.private_ip_address }}" >> ping_result.txt
+            ping -c 4 ${{ steps.ec2.outputs.private_ip_address }} >> ping_result.txt
             if [ $? -eq 0 ]; then
               echo "✅ Successfully executed commands to all host."
             else
@@ -94,7 +103,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: ping-result
-          path: /tmp/ping_result.txt
+          path: ping_result.txt
           retention-days: 1
       - uses: actions/github-script@v7
         if:  github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
