@@ -63,6 +63,9 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             uptime
+            sudo apt update
+            sudo apt install -y awscli
+            aws --version
             export EC2_PRIVATE_IP=$(aws ec2 describe-instances \
               --filters "Name=tag:Name,Values=test-2b" \
               --query "Reservations[].Instances[].PrivateIpAddress" \
