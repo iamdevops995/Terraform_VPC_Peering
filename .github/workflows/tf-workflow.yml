@@ -115,7 +115,7 @@ jobs:
       #     cat ping_result.txt
     #
       - name: upload ping result as artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v4
         with:
           name: ping-result
           path: $GITHUB_WORKSPACE/terraform/ping_result.txt
