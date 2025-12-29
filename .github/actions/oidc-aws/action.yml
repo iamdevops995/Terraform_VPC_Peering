@@ -1,0 +1,26 @@
+name: 'OpenID connect to AWS'
+description: 'OpenID connect to AWS'
+inputs:
+  role-to-assume:
+    description: "Provide role for OpenID Connect"
+    required: true
+  aws-region:
+    description: "Enter the regio for aws"
+    required: true
+    default: "us-east-1"
+runs:
+  using: "composite"
+  steps:
+    - name: Connect to aws using OIDC
+      uses: aws-actions/configure-aws-credentials@v5.1.1
+      with:
+        role-to-assume: ${{ inputs.role-to-assume }}
+        aws-region: ${{ inputs.aws-region }}
+
+# runs:
+#   using: "composite"
+#   steps:
+#     - uses: aws-actions/configure-aws-credentials@v5.1.1
+#       with:
+#         role-to-assume: arn:aws:iam::537726824414:role/OpenIDGithubRole
+#         aws-region: us-east-1
