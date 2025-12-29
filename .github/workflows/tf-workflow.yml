@@ -61,17 +61,11 @@ jobs:
           username: ubuntu
           port: 22
           key: ${{ secrets.EC2_SSH_KEY }}
+        env:
+          TARGET_HOST: ${{ vars.TARGET_HOST }}
           script: |
             uptime
-            sudo apt update
-            sudo apt install -y awscli
-            aws --version
-            export EC2_PRIVATE_IP=$(aws ec2 describe-instances \
-              --filters "Name=tag:Name,Values=test-2b" \
-              --query "Reservations[].Instances[].PrivateIpAddress" \
-              --output text)
-            echo "Private IP is: ${EC2_PRIVATE_IP}"
-            ping -c 3 ${EC2_PRIVATE_IP}
+            ping -c 3 ${var.TARGET_HOST}
       - uses: actions/github-script@v7
         if:  github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
         env:
