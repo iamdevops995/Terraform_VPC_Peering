@@ -1,4 +1,4 @@
-name: Infrastructure provisioning using terraform
+name: aws vpc peering using terraform
 permissions:
   id-token: write
   contents: read
