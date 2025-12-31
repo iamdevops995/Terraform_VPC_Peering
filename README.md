@@ -63,3 +63,8 @@ terraform plan
 ```
 terraform apply --auto-approve
 ```
+
+**Terraform destroy**
+```
+terraform destroy
+```
