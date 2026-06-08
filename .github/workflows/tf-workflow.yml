@@ -57,8 +57,19 @@ jobs:
         run: terraform validate -no-color
       - name: Terraform Plan 
         id: plan
-        run: terraform plan -no-color -input=false  | tee plan.txt
+        # run: terraform plan -no-color -input=false  | tee plan.txt
+        run: |
+          terraform plan -out=tfplan.binary
+          terraform show -json tfplan.binary > tfplan.json
         continue-on-error: true
+      - name: Setup OPA
+        uses: open-policy-agent/setup-opa@v2
+        with:
+          version: latest
+      - name: Run OPA Tests
+        # run: opa test tests/*.rego -v
+        run: opa eval --input tfplan.json --data policy.rego "data.terraform"
+        if: github.event_name == 'workflow_dispatch'
       - name: Terraform Apply
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         run: terraform apply -auto-approve
